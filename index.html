@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>Babylon.js sample code</title>
+        <title>Diplomna-Violeta</title>
 
         <!-- Babylon.js -->
         <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
@@ -20,12 +20,165 @@
         <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
         <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
         <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 
         <link rel="stylesheet" href="style.css">
 
     </head>
 <body>
+    <div class="sheet">
+
+        <div id="btn-group" style="width:100%">
+            
+
+            <!-- id = "browseBut" -->
+            <label for="is-local-files" class="custom-is-local-files">
+              Upload model
+            </label>
+            <input id = "is-local-files" class='DBBut' onchange="" type = 'file' accept = '.babylon,.obj,.txt' /> 
+
+            <label for="is-local-files" class="custom-is-local-files">
+              Upload logo
+            </label>
+            <input id = "is-local-files" class='DBBut' onchange="" type = 'file' accept = '.babylon,.obj,.txt' /> 
+
+            <button id="restart-btn"  onchange="">Restart scene</button>
+
+            <button id="save-btn">Save</button>
+            <!-- <input type="file" accept=".obj" id="uploadModel" onchange="myFunction()"> -->
+
+            <!-- <input type="file"  id="file" name="file" multiple = "" accept="image/*" onchange="loadFile(event)">
+            <img id="output"/> -->
+        </div>
+
+       
+<!-- <script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+</script> -->
+    <!-- <button type="submit" id="button">hhhh</button>
+    <input type="file" id="file" name="file" multiple = "">
+        <input type="file" id="img-uploader">
+    <progress id="img-upload-bar" value="0" max="100" style="width: 100%"></progress> -->
+    </div>
     <canvas id="renderCanvas"></canvas>
+    
+
+
+
+    <!-- <div id="upload-model">
+        <h1>Upload Model</h1>
+        <ul id="model-list"></ul>
+        <input type="file" name="model" id="model-input">
+      </div>
+      <script>
+        window.addEventListener('DOMContentLoaded', function(){          
+            // get the canvas DOM element
+            var canvas = document.getElementById('renderCanvas');
+
+            // load the 3D engine
+            var engine = new BABYLON.Engine(canvas, true);
+
+            // createScene function that creates and return the scene
+            var createScene = function(){
+                // create a basic BJS Scene object
+                var scene = new BABYLON.Scene(engine);
+
+                // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
+                var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
+
+                // target the camera to scene origin
+                camera.setTarget(BABYLON.Vector3.Zero());
+
+                // attach the camera to the canvas
+                camera.attachControl(canvas, false);
+
+                // create a basic light, aiming 0,1,0 - meaning, to the sky
+                var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+
+                // create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation 
+                var sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene);
+
+                // move the sphere upward 1/2 of its height
+                sphere.position.y = 1;
+
+                // change background color
+                scene.clearColor = new BABYLON.Color3(.6,.6,.6);
+
+                // create a built-in "ground" shape;
+                var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
+
+                // return the created scene
+                return scene;
+            }
+
+            // call the createScene function
+            var scene = createScene();
+
+            // run the render loop
+            engine.runRenderLoop(function(){
+                scene.render();
+            });
+
+            // the canvas/window resize event handler
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+
+            // not passing any url since it defaults to trying to connect
+            // to the host that serves the page.  
+            var socket = io();
+            
+            document.getElementById("model-input").addEventListener('change',(e) => {
+                e.preventDefault(); // prevents page reloading
+                const file = e.target.files[0];
+                const fileData = {
+                  name: file.name,
+                  data: file
+                };
+                const fileExtension = getFileExtension(file.name)
+                socket.emit('file uploaded', fileData);
+                addModelNameToList(file.name)
+                addModelToScene(file, fileExtension, scene)
+                return false;
+            });
+
+            socket.on('file uploaded', function(filedata){
+              addModelNameToList(filedata.name)
+              addModelToScene(filedata.data, getFileExtension(filedata.name), scene)
+            });
+
+
+            function getFileExtension(fileName) {
+              return '.' + fileName.split('.')[1]
+            }
+
+            function addModelNameToList(modelName) {
+              const fileNameElement = document.createElement("li");
+              fileNameElement.textContent = modelName
+              document.getElementById("model-list").append(fileNameElement);
+            }
+
+            function addModelToScene(file, fileExtension, scene) {
+              scene.meshes.forEach(mesh => {
+                mesh.dispose();
+              });
+              var blob = new Blob([file]);
+              var url = URL.createObjectURL(blob);
+              BABYLON.SceneLoader.Append("", url, scene, function () { 
+                scene.createDefaultCamera(true, true, true);
+                }, undefined, undefined, fileExtension);
+              }
+            });
+    </script>
+   -->
+   
     <script src="main.js"></script>
+    
 </body>
 </html>
