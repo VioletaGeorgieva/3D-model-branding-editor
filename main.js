@@ -1,7 +1,6 @@
 "use strict"
 
 var canvas = document.getElementById("renderCanvas");
-
 var engine = null;
 var scene = null;
 var sceneToRender = null;
@@ -63,6 +62,11 @@ var createScene = function () {
   sphere1.position.z = 0;
   sphere1.material = color1;
 
+  var sphere2 = BABYLON.MeshBuilder.CreateSphere("sphere2", { diameter: 2, segments: 32 }, scene);
+  sphere2.position.y = 2;
+  sphere2.position.x = 2;
+  sphere2.position.z = 0;
+
   // Our built-in 'ground' shape.
   var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 13, height: 13 }, scene);
   const material_ground = new BABYLON.StandardMaterial('material_ground', scene);
@@ -72,6 +76,7 @@ var createScene = function () {
 ////////////////////////////////////////////////    SPHERE AND GROUND MESHS    //////////////////////////////////////////////
   
 ////////////////////////////////////////////////////////    SELECT     ///////////////////////////////////////////////////////
+
 var selected = null;
     scene.onPointerObservable.add(function(evt){
         if(selected) {
@@ -88,7 +93,7 @@ var selected = null;
     var currentMesh;
 
     var getGroundPosition = function () {
-        var pickinfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh == ground; });
+        var pickinfo = scene.pick(scene.pointerX, scene.pointerY, scene.pointerZ, function (mesh) { return mesh == ground; });
         if (pickinfo.hit) {
             return pickinfo.pickedPoint;
         }
@@ -146,13 +151,15 @@ var selected = null;
         }
     });
 
+    
+
 //////////////////////////////////////////////////////////    SELECT     //////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////     DRAG       //////////////////////////////////////////////////
   var pointerDragBehavior = new BABYLON.PointerDragBehavior({ dragAxis: new BABYLON.Vector3(1, 0, 0) });
   var pointerDragBehavior = new BABYLON.PointerDragBehavior({ dragYxis: new BABYLON.Vector3(0, 1, 0) });
   var pointerDragBehavior = new BABYLON.PointerDragBehavior({ dragZxis: new BABYLON.Vector3(0, 0, 1) });
-
+    
   // Use drag plane in world space
   pointerDragBehavior.useObjectOrientationForDragging = false;
 
@@ -281,13 +288,37 @@ var selected = null;
   sphere.rotation.x = slider.value;
 ////////////////////////////////////////////////////    ROTATION     /////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////    COLOR     //////////////////////////////////////////////////////
 
-  // function doImport(data) {
-  //   BABYLON.SceneLoader.ImportMesh(("name", "", 'data:' + data, scene, function (object) {
-  //     // You can apply properties to object.
-  //     object.scaling = new BABYLON.Vector3(1, 1, 1);
-  //   }));
-  // }
+ // GUI
+var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+var panel = new BABYLON.GUI.StackPanel();
+panel.height = "600px";
+panel.width = "200px";
+panel.isVertical = true;
+panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+advancedTexture.addControl(panel);
+
+var textBlock = new BABYLON.GUI.TextBlock();
+textBlock.text = "Diffuse color:";
+textBlock.height = "30px";
+panel.addControl(textBlock);     
+
+var picker = new BABYLON.GUI.ColorPicker();
+picker.value = new BABYLON.Color3(0.9,0.1,0.0);
+picker.height = "150px";
+picker.width = "150px";
+picker.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+picker.onValueChangedObservable.add(function(value) { // value is a color3
+    sphere2.material.diffuseColor.copyFrom(value);
+});
+
+panel.addControl(picker);     
+
+//////////////////////////////////////////////////////////    COLOR     //////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////      RELOAD       ///////////////////////////////////////////////////////
   document.getElementById("restart-btn").addEventListener("click",function () {
@@ -411,38 +442,3 @@ htmlInput.onchange = function (evt) {
 
 
 
-
-//   "change",
-//   event => {
-//     let filesToLoad = null;
-//     // Handling data transfer via drag'n'drop
-//     if (event && event.dataTransfer && event.dataTransfer.files) {
-//       filesToLoad = event.dataTransfer.files;
-//     }
-//     // Handling files from input files
-//     if (event && event.target && event.target.files) {
-//       filesToLoad = event.target.files;
-//     }
-//     if (filesToLoad.length == 0) {
-//       return;
-//     }
-
-//     const format = filesToLoad[0].name.split(".").pop();
-//     BABYLON.SceneLoader.Append("", "data:" + getBase64(Array.from(filesToLoad)[0]), engine, () => console.log('Mesh loaded! yay'));
-//     // BABYLON.SceneLoader.Load("http://www.link.com/folderMeshAndTextures/", "mesh.babylon", engine, function (newScene) { });
-//   },
-//   false
-// );
-
-//function doImport() {
-
-//   var f = browseBut.files[0];
-//   if (f) {
-//     var r = new FileReader();
-//     r.onloadend = function (evt) { doImport(evt.target.result) };
-//     //r.readAsText(f);
-//   }
-//   else {
-//     alert("Failed to load file");
-//   }
-// };
